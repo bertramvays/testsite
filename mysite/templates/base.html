@@ -16,13 +16,15 @@
         <div class="row">
             <div class="col-md-3">
             {% block sidebar %}Sidebar{% endblock %}
-            </div>
-        <div class="col-md-9">
 
+            </div>{% block content %}Content{% endblock %}
         </div>
-    {% block content %}Content{% endblock %}
+
 
     </div>
+        <div class="col-md-10">
+
+
 </div>
 
 

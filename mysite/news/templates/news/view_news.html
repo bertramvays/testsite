@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-{{ title }} :: {{ block.super }}
+{{ news_item.title }} :: {{ block.super }}
 {% endblock %}
 
 {% block sidebar %}
@@ -9,34 +9,34 @@
 
 {% block content %}
 
-        {% for item in news %}
+
         <div class="card mb-3">
           <div class="card-header">
-            Категория: <a href="{{ item.category.get_absolute_url }}">
-              {{ item.category }}</a>
+            Категория: <a href="{{ news_item.category.get_absolute_url }}">
+              {{ news_item.category }}</a>
           </div>
 
           <div class="card-body">
               <div class="media">
                   {% if item.photo %}
-                  <img src="{{ item.photo.url }}" alt="">
+                  <img src="{{ news_item.photo.url }}" alt="">
 
                   {% endif %}
                   <div class="media-body">
-                    <h5 class="card-title {% cycle 'text-danger' 'text-success' %}"> {{ item.title }}</h5>
+                    <h5 class="card-title {% cycle 'text-danger' 'text-success' %}"> {{ news_item.title }}</h5>
 
-            <p class="card-text">{{ item.content }}</p>
+            <p class="card-text">{{ news_item.content }}</p>
 
-            <a href="{{ item.get_absolute_url }}" class="btn btn-primary">Read more...</a>
+
           </div>
                   </div>
               </div>
 
           <div class="card-footer text-muted">
-              {{ item.created_at|date:"Y-m-d H:i:s" }}
+              {{ news_item.created_at|date:"Y-m-d H:i:s" }}
           </div>
         </div>
-        {% endfor %}
+
 
 {% endblock %}
 

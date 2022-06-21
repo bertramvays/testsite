@@ -1,9 +1,9 @@
 <div class="list-group">
-{{ arg1 }} {{ arg2 }}
-                                {% for item in categories %}
-              <a href="{% url 'category' item.pk %}" class="list-group-item list-group-item-action active"
-                 aria-current="true">
-                  {{item.title}}
-              </a>
-                            {% endfor %}
-            </div>
+    {% for item in categories %}
+    <a href="{{ item.get_absolute_url }}"
+       class="list-group-item list-group-item-action active"
+       aria-current="true">
+     {{item.title}}
+     </a>
+     {% endfor %}
+</div>
