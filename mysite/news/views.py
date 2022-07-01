@@ -3,17 +3,24 @@ from django.views.generic import ListView, DetailView, CreateView
 from .models import News, Category
 from .forms import NewsForm
 from django.urls import reverse_lazy
+from .utils import MyMixin
+from django.contrib.auth.mixins import LoginRequiredMixin  # Миксин для ограничения доступа к разделам сайта.
 
 
-class HomeNews(ListView):
+def test(request):
+
+
+class HomeNews(MyMixin, ListView):
     model = News
     template_name = 'news/home_news_list.html'
-    context_object_name = 'news'
+    context_object_name: str = 'news'
     #extra_context = {'title': 'Главная'}
+    mixin_prop = 'hello world'
 
-    def get_context_date(self, *, object_list=None, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Главная страница'
+        context['title'] = self.get_upper('Главная страница')
+        context['mixin_prop'] = self.get_prop()
         return context
 
     def get_queryset(self):
@@ -47,7 +54,7 @@ class NewsByCategory(ListView):
     context_object_name = 'news'
     allow_empty = False  #  не выводить категорию если она пуста (заперет показа пустого списка)
 
-    def get_context_date(self, *, object_list=None, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = Category.objects.get(pk=self.kwargs['category_id'])
         return context
@@ -65,11 +72,13 @@ def get_category(request, category_id):
                                                   'category': category })
 
 
-class CreateNews(CreateView):
+class CreateNews(LoginRequiredMixin, CreateView):
     form_class = NewsForm
     template_name = 'news/add_news.html'
     #success_url =  reverse_lazy('home')  # куда редиректить после создания новости
     # если этого метода нет, тогда редирект происходить через метод models.get_absolute_url
+    raise_exception = True
+
 
 
 
