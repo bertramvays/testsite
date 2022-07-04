@@ -5,10 +5,26 @@ from .forms import NewsForm
 from django.urls import reverse_lazy
 from .utils import MyMixin
 from django.contrib.auth.mixins import LoginRequiredMixin  # Миксин для ограничения доступа к разделам сайта.
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 
 
-def test(request):
 
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Вы успешно зарегестрировались')
+            return redirect('login')
+        else:
+            messages.error(request, 'Ошибка при попытке регистрации')
+    else:
+        form = UserCreationForm()
+    return render(request, 'news/register.html', {"form": form})
+
+def login(request):
+    return render(request, 'news/login.html')
 
 class HomeNews(MyMixin, ListView):
     model = News
@@ -16,6 +32,7 @@ class HomeNews(MyMixin, ListView):
     context_object_name: str = 'news'
     #extra_context = {'title': 'Главная'}
     mixin_prop = 'hello world'
+    # paginate_by = 2
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
