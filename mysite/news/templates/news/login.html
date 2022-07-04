@@ -10,6 +10,12 @@
 {% block content %}
 
 <h1>Вход пользователя</h1>
+<form method="post">
+     {% csrf_token %}
+     {{ form.as_p }} <!-- способ вывода формы, при котором каждое поле формы это параграф. Еще есть form.as_table и
+form.as_ul каждое поле элемент списка и элемент таблицы соответственно -->
+<button type="submit" class="btn btn-primary btn-block">Логин</button>
+</form>
 
 {% endblock %}
 

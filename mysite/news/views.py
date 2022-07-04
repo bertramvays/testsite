@@ -1,18 +1,18 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView
 from .models import News, Category
-from .forms import NewsForm
+from .forms import NewsForm, UserRegisterForm, UserLoginForm
 from django.urls import reverse_lazy
 from .utils import MyMixin
 from django.contrib.auth.mixins import LoginRequiredMixin  # Миксин для ограничения доступа к разделам сайта.
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, logout
 from django.contrib import messages
 
 
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Вы успешно зарегестрировались')
@@ -20,11 +20,24 @@ def register(request):
         else:
             messages.error(request, 'Ошибка при попытке регистрации')
     else:
-        form = UserCreationForm()
+        form = UserRegisterForm()
     return render(request, 'news/register.html', {"form": form})
 
-def login(request):
-    return render(request, 'news/login.html')
+def user_login(request):
+    if request.method == 'POST':
+        form = UserLoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()  # получаем пользователя
+            login(request, user)
+            return redirect('home')  # после авторизации переходим на домашнюю страницу
+    else:
+        form = UserLoginForm()  # если данные пришли не через POST создаем объект формы не связанный с данными
+    return render(request, 'news/login.html', {"form": form})
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')
 
 class HomeNews(MyMixin, ListView):
     model = News
